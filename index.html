@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Premium Services</title>
+    
+    <!-- Polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#D4AF37',
+                        light: '#FDFBF7',
+                        dark: '#1A1A1A'
+                    },
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        syne: ['Syne', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Icônes Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Styles CSS -->
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #1A1A1A;
+            overflow-x: hidden;
+            cursor: none;
+            margin: 0; padding: 0;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FDFBF7; }
+        ::-webkit-scrollbar-thumb { background: #E5E5E5; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+        .glass-panel-gold {
+            background: rgba(212, 175, 55, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #cursor-dot {
+            position: fixed; top: 0; left: 0; width: 16px; height: 16px;
+            background-color: #D4AF37; border-radius: 50%; pointer-events: none;
+            z-index: 9999; transition: transform 0.1s ease-out; mix-blend-mode: difference;
+        }
+        #cursor-ring {
+            position: fixed; top: 0; left: 0; width: 48px; height: 48px;
+            border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 50%;
+            pointer-events: none; z-index: 9998; transition: transform 0.3s ease-out;
+        }
+        
+        @media (max-width: 768px) {
+            #cursor-dot, #cursor-ring { display: none; }
+            body { cursor: auto; }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-gold selection:text-black">
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full z-40 px-6 py-4 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <button onclick="navigate('home')" class="flex items-center outline-none">
+                <img src="./IMG_7586.png" alt="LPS Logo" class="h-12 md:h-16 object-contain drop-shadow-sm" onerror="this.src='https://placehold.co/100x40/transparent/D4AF37?text=LPS'">
+            </button>
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold tracking-widest uppercase text-gray-600">
+                <button onclick="navigate('drive')" class="hover:text-gold transition-colors t-nav-drive">Drive</button>
+                <button onclick="navigate('rent')" class="hover:text-gold transition-colors t-nav-rent">Rent</button>
+                <button onclick="navigate('conciergerie')" class="hover:text-gold transition-colors t-nav-concierge">Conciergerie</button>
+                <button onclick="navigate('wedding')" class="hover:text-gold transition-colors t-nav-wedding">Wedding</button>
+                <button onclick="navigate('conditions')" class="hover:text-gold transition-colors t-nav-cond">Nos Conditions</button>
+                <div class="w-[1px] h-4 bg-gray-300"></div>
+                <button onclick="toggleLang()" class="flex items-center gap-2 hover:text-black transition-colors font-bold text-lg outline-none">
+                    <i data-lucide="globe" class="w-4 h-4"></i> <span id="lang-indicator">EN</span>
+                </button>
+            </div>
+            <button class="md:hidden text-gray-900 outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 py-6 px-6 flex flex-col gap-6 shadow-xl">
+            <button onclick="navigate('drive'); this.parentNode.classList.add('hidden')" class="text-left font-syne uppercase text-lg text-gray-800 t-nav-drive">Drive</button>
+            <button onclick="navigate('rent'); this.parentNode.classList.add('hidden')" class="text-left font-syne uppercase text-lg text-gray-800 t-nav-rent">Rent</button>
+            <button onclick="navigate('conciergerie'); this.parentNode.classList.add('hidden')" class="text-left font-syne uppercase text-lg text-gray-800 t-nav-concierge">Conciergerie</button>
+            <button onclick="navigate('wedding'); this.parentNode.classList.add('hidden')" class="text-left font-syne uppercase text-lg text-gray-800 t-nav-wedding">Wedding</button>
+            <button onclick="navigate('conditions'); this.parentNode.classList.add('hidden')" class="text-left font-syne uppercase text-lg text-gray-800 t-nav-cond">Nos Conditions</button>
+            <div class="border-t border-gray-100 pt-4">
+                <button onclick="toggleLang(); this.parentNode.parentNode.classList.add('hidden')" class="flex items-center gap-2 text-gray-900 font-bold outline-none">
+                    <i data-lucide="globe" class="w-5 h-5"></i> <span class="t-nav-lang">Switch Language</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ZONE DE CONTENU DYNAMIQUE -->
+    <main id="main-content"></main>
+
+    <!-- FOOTER -->
+    <footer class="py-20 px-6 bg-white border-t border-gray-200 relative overflow-hidden flex flex-col justify-between mt-auto">
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
+            <div>
+                <button onclick="navigate('home')" class="flex items-center mb-6 outline-none">
+                    <img src="./IMG_7586.png" alt="LPS Logo" class="h-16 md:h-20 object-contain drop-shadow-sm grayscale hover:grayscale-0 transition-all duration-300" onerror="this.src='https://placehold.co/100x40/transparent/D4AF37?text=LPS'">
+                </button>
+                <p class="text-gray-500 text-sm mb-8 pr-4 t-foot-desc">La quintessence du service automobile et de la conciergerie de luxe. L'excellence comme seul standard.</p>
+            </div>
+            <div>
+                <h5 class="font-syne text-gray-900 uppercase tracking-widest mb-6 font-bold t-foot-pillars">Piliers</h5>
+                <ul class="space-y-4 text-sm text-gray-500 font-semibold">
+                    <li><button onclick="navigate('drive')" class="hover:text-gold transition-colors outline-none t-nav-drive">LP Drive</button></li>
+                    <li><button onclick="navigate('rent')" class="hover:text-gold transition-colors outline-none t-nav-rent">LP Rent</button></li>
+                    <li><button onclick="navigate('conciergerie')" class="hover:text-gold transition-colors outline-none t-nav-concierge">LP Conciergerie</button></li>
+                    <li><button onclick="navigate('wedding')" class="hover:text-gold transition-colors outline-none t-nav-wedding">LP Wedding</button></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-syne text-gray-900 uppercase tracking-widest mb-6 font-bold t-foot-legal">Légal</h5>
+                <ul class="space-y-4 text-sm text-gray-500 font-semibold">
+                    <li><button onclick="navigate('conditions')" class="hover:text-black transition-colors outline-none t-nav-cond">Nos Conditions</button></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-syne text-gray-900 uppercase tracking-widest mb-6 font-bold t-foot-contact">Contact</h5>
+                <button onclick="navigate('contact')" class="w-full py-4 bg-gray-900 text-white text-sm uppercase tracking-widest hover:bg-gold rounded-lg transition-colors font-semibold shadow-md outline-none t-foot-btn">
+                    Nous contacter
+                </button>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto w-full mt-20 pt-8 border-t border-gray-100 text-center">
+            <p class="text-gray-400 text-sm font-light uppercase tracking-wider">© 2026 luxury premium services. Inc. All rights reserved</p>
+        </div>
+    </footer>
+
+    <!-- AI CONCIERGE -->
+    <div class="fixed bottom-8 right-8 z-50 flex flex-col items-end">
+        <div id="ai-panel" class="glass-panel rounded-2xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-bottom-right mb-4 w-0 h-0 opacity-0 scale-50">
+            <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-white/50">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <i data-lucide="cpu" class="text-gold w-4 h-4"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    </div>
+                    <span class="font-syne font-semibold text-sm tracking-wider uppercase text-gray-900">Agent LP-01</span>
+                </div>
+                <button onclick="toggleAi()" class="text-gray-500 hover:text-black transition-colors outline-none"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div class="p-5 flex flex-col h-[calc(100%-60px)]">
+                <div class="flex-1 text-sm text-gray-600 space-y-4">
+                    <p class="t-ai-1">Système initialisé. Connexion établie.</p>
+                    <p class="text-gray-900 font-medium t-ai-2">Bonjour. Je suis l'intelligence artificielle de Luxury Premium Services. Comment puis-je vous aider ?</p>
+                </div>
+                <div class="relative mt-auto">
+                    <input type="text" id="ai-input" placeholder="Votre requête..." class="w-full bg-white border border-gray-200 rounded-lg py-3 px-4 text-sm focus:outline-none focus:border-gold transition-colors" disabled>
+                    <i data-lucide="sparkles" class="absolute right-3 top-3.5 text-gold w-4 h-4"></i>
+                </div>
+            </div>
+        </div>
+        <button onclick="toggleAi()" class="w-16 h-16 rounded-full bg-white border border-gold/50 flex items-center justify-center shadow-xl relative group outline-none hover:scale-105 transition-transform">
+            <div class="absolute inset-0 rounded-full bg-gold/20 animate-ping opacity-50"></div>
+            <i data-lucide="cpu" class="text-gold w-6 h-6 relative z-10"></i>
+        </button>
+    </div>
+
+    <!-- MODAL VÉHICULE -->
+    <div id="car-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer" onclick="closeCarModal()"></div>
+        <div class="relative bg-light w-full max-w-5xl h-auto md:h-[600px] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row transform scale-95 transition-transform duration-300" id="car-modal-content">
+            <button onclick="closeCarModal()" class="absolute top-4 right-4 z-10 text-gray-500 hover:text-black bg-white/50 backdrop-blur-sm rounded-full p-2 transition-colors outline-none"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <div class="w-full md:w-1/2 h-64 md:h-full relative">
+                <img id="modal-img" src="" alt="Car" class="w-full h-full object-cover">
+                <div id="modal-brand" class="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-gray-900 shadow-sm"></div>
+            </div>
+            <div class="w-full md:w-1/2 p-8 md:p-14 flex flex-col justify-center bg-light">
+                <h2 id="modal-model" class="font-syne text-3xl md:text-5xl uppercase font-medium text-gray-900 mb-2 tracking-tight"></h2>
+                <p class="text-gray-600 font-semibold mb-10 text-sm md:text-base">Luxury Premium Services</p>
+                <p class="text-lg md:text-xl font-light text-gray-800 uppercase tracking-widest border-t border-gray-200 pt-8"><span class="t-rent-day">JOURNÉE :</span> <span id="modal-price"></span></p>
+                <button class="mt-12 bg-black text-white py-4 px-8 rounded-lg uppercase tracking-widest text-sm font-semibold hover:bg-gold transition-colors w-max shadow-lg outline-none t-rent-book">Réserver ce véhicule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIQUE JAVASCRIPT -->
+    <script>
+        let currentLang = 'fr';
+        let currentPage = 'home';
+        
+        // Dictionnaire exact de la version React
+        const dict = {
+            fr: {
+                nav: { drive: "Drive", rent: "Rent", conciergerie: "Conciergerie", wedding: "Wedding", conditions: "Nos Conditions", lang: "Switch to English" },
+                hero: { sub: "Redéfinir l'excellence automobile", desc: "Bien plus qu'une location. Une ingénierie de services haut de gamme conçue pour ceux qui exigent la perfection, de la route à la conciergerie privée.", btn1: "Découvrir la flotte", btn2: "Conciergerie Privée" },
+                home: { title: "Luxury Premium", span: "Services", desc: "Spécialisé dans la location de véhicules haut de gamme récents et parfaitement entretenus, avec ou sans chauffeur.", driveDesc: "Doté d'un service de conciergerie de prestige adapté à toutes vos demandes, LP DRIVE met à votre disposition des chauffeurs bilingues et expérimentés qui feront de vos déplacements un agréable moment à bord de nos véhicules.", rentDesc: "LP RENT vous propose une large gamme de véhicules exceptionnels (Porsche, Ferrari, Bentley, Rolls-Royce, Smart, Mercedes, BMW...) qui saura satisfaire tous vos besoins (déplacements professionnels et personnels).", conciergeDesc: "LP CONCIERGERIE met à votre disposition un service de conciergerie sur mesure qui répondra à toutes vos attentes.", pillarsTitle: "Nos Piliers d'Excellence", fleetTitle: "La Flotte", fleetBtn: "Voir tout le catalogue" },
+                foot: { desc: "La quintessence du service automobile et de la conciergerie de luxe. L'excellence comme seul standard.", pillars: "Piliers", legal: "Légal", contact: "Contact", btn: "Nous contacter" },
+                ai: { m1: "Système initialisé. Connexion établie.", m2: "Bonjour. Je suis l'intelligence artificielle de Luxury Premium Services. Comment puis-je vous aider ?", input: "Votre requête..." },
+                rentPage: { dayRate: "JOURNÉE :", bookBtn: "Réserver ce véhicule", otherModels: "Autres modèles sur demande" },
+                pages: {
+                    drive: { 
+                        title: "LP Drive", subtitle: "Des solutions adaptées à vos demandes pour vous accompagner tout au long de vos déplacements qu'ils soient dans un cadre professionnel ou privé.", content: ["LP Drive est spécialisé dans la location de véhicules haut de gamme avec chauffeur en France et dans les grandes villes Européennes.", "L'équipe LP DRIVE met à votre disposition des chauffeurs professionnels et expérimentés, en cas d'aléas, nous le remplaçons sans délai.", "Réactivité, Disponibilité et Confidentialité sont nos atouts maîtres."], tableTitle: "NOS TARIFS", tableSubtitle: "Les prix affichés incluent le service avec chauffeur, l'assurance et les frais de carburant.", tableHeaders: ["Modèle", "Prix /Jour*", "Heure Supp."], tableNote1: "*Les prix indiqués sont pour une durée de contrat inférieur à 7 jours, au-delà nous effectuons un devis.", tableNote2: "Autres modèles sur demande"
+                    },
+                    rent: { 
+                        title: "LP Rent", subtitle: "Tout au long de l'année l'équipe LP RENT œuvre afin de vous proposer des nouveautés en exclusivité.", content: ["LP RENT vous propose une large gamme de véhicules de luxe adaptée à vos besoins (Smart, Mini, Mercedes, BMW, Maserati, Bentley, Ferrari, Lamborghini, Rolls-Royce...)."]
+                    },
+                    conciergerie: { 
+                        title: "LP Conciergerie", subtitle: "La maîtrise d'un grand savoir-faire de toute une équipe motivée afin de faire de chacune de vos demandes un évènement exceptionnel.", content: ["LP CONCIERGERIE partagera avec vous ses adresses les plus confidentielles et les plus tendances.", "L'équipe vous signalera les événements les plus rares et imaginera pour vous le scénario de vos désirs (villa, yacht, jet privé, hélicoptère, accueil VIP)."]
+                    },
+                    wedding: { 
+                        title: "LP Wedding", subtitle: "POUR VOTRE MARIAGE, CHAQUE DÉTAIL COMPTE.", content: ["LP Wedding met à votre disposition son savoir-faire de plus de 5 ans dans le domaine du transport de personnes et vous propose la location avec chauffeur pour votre mariage.", "Le mariage est un jour unique dans votre vie !", "Parmi les nombreux critères auxquels il faut penser pour organiser une cérémonie de mariage, le transport des jeunes mariés est un élément essentiel pour lequel vous devez choisir ce qui se fait de mieux."], statsLabel: "Années d'expérience", pricing: "Forfait mariage à partir de 850€ - demandez votre devis sur la page contact"
+                    },
+                    contact: { 
+                        title: "Nous Contacter", desc: "Notre équipe est à votre disposition pour toute demande de réservation, devis sur-mesure ou information concernant nos services.", contactInfo: { phone: "01.48.42.54.77", email: "contact@infolps.fr" }
+                    }
+                },
+                conditionsPage: {
+                    title1: "CONDITIONS GÉNÉRALES DE VENTE", section1_title: "Véhicule avec chauffeur particulier, transport de personnes", section1_text: "Les prix indiqués dans nos tarifs incluent la TVA au taux fixé par les réglementations en vigueur pour les prestations de transports (*), le service chauffeur, le carburant et les assurances illimitées « personnes transportées ». Les péages, frais de parking et repas sont à la charge des personnes transportées. Les bagages sont acceptés dans la limite de 30 kg par personne transportée et demeurant sous la garde de celle-ci.", section2_title: "Modes de paiement acceptés", section2_text: "Espèces, chèques, cartes bancaires (Visa ou Master Card). Toute prestation de transport est payable comptant à son achèvement ; si la personne transportée possède la qualité de « client en compte », la prestation donne lieu à la facturation payable à réception. Toute réclamation n'est recevable que dans les 7 jours de l'exécution.", section3_title: "(*) Taux De TVA Appliqué", section3_text: "20% (taux qui serait à actualiser en cas de changement par toutes dispositions législatives et/ou réglementaires).", important_title: "TRÈS IMPORTANT", important_text: "Le transport de personnes à titre payant est une activité réglementée. Seuls les véhicules autorisés (Grande Remise, Transport occasionnel) peuvent effectuer ce service. Nous nous permettons de vous mettre en garde contre certaines organisations utilisant des voitures non agréées qui sont en dehors de toute légalité et ne peuvent vous offrir aucune garantie.",
+                    title2: "CONDITIONS GÉNÉRALES DE LOCATION", section4_title: "Extrait", section4_text1: "Nos prix sont exprimés en Euros T.T.C. (T.V.A. 20% incluse). Ils s’entendent par tranche de 24h. Au-delà une journée supplémentaire sera facturée. Nos prix comprennent le kilométrage inclus indiqué sur chaque contrat, la responsabilité civile, les assurances tiers-collision illimitées, vol-incendie.", section4_text2: "Les dommages causés aux parties hautes du véhicule ainsi que les chocs sous caisse sont exclus, de même que les marchandises transportées, les déchirures et crevaisons de pneumatiques, les frais de parking, les frais de fourrière, et tous les autres frais divers qui restent à la charge du locataire lorsque sa responsabilité se trouve engagée. Le matériel spécifique amovible doit impérativement être restitué avec le véhicule. Les bris de glace ne sont pas couverts. Le conducteur sera déchu de son assurance en cas de conduite en état d’ivresse ou sous l’emprise de stupéfiants.", section5_title: "Documents Nécessaires", section5_text: "Carte bancaire accréditée par Luxury Premium Services, chèque bancaire (après qualification), pièce d'identité, permis de conduire de plus de 3 ans, justificatif de domicile, un bon de commande (pour les entreprises).", section6_title: "Conditions De Locations", section6_text: "Le conducteur sera âgé de 25 ans minimum, et titulaire d'un permis de conduire de plus de 3 ans. Hormis certaines catégories de véhicules : voiture de sport et catégorie haut de gamme, où le titulaire devra être en possession d'un permis de conduire depuis plus de 5 ans et être âgé de 25 ans minimum.", section7_title: "Abandon Du Véhicules", section7_text1: "Sauf accord préalable et écrit du loueur, le véhicule devra être restitué à l'agence qui a établi le contrat de location. En cas de force majeure, tout rapatriement et frais divers inhérents resteront à la charge totale du client.", section7_text2: "Pour plus d'informations, contactez notre agence."
+                }
+            },
+            en: {
+                nav: { drive: "Drive", rent: "Rent", conciergerie: "Concierge", wedding: "Wedding", conditions: "Terms & Conditions", lang: "Passer en Français" },
+                hero: { sub: "Redefining automotive excellence", desc: "More than a rental. High-end service engineering designed for those who demand perfection, from the road to private concierge services.", btn1: "Discover the fleet", btn2: "Private Concierge" },
+                home: { title: "Luxury Premium", span: "Services", desc: "Specialized in renting recent, perfectly maintained high-end vehicles, with or without a driver.", driveDesc: "Equipped with a prestige concierge service adapted to all your requests, LP DRIVE provides bilingual and experienced drivers to make your travels a pleasant moment aboard our vehicles.", rentDesc: "LP RENT offers a wide range of exceptional vehicles (Porsche, Ferrari, Bentley, Rolls-Royce, Smart, Mercedes, BMW...) that will satisfy all your needs (professional and personal travel).", conciergeDesc: "LP CONCIERGERIE offers a tailor-made concierge service that will meet all your expectations.", pillarsTitle: "Our Pillars of Excellence", fleetTitle: "The Fleet", fleetBtn: "View full catalog" },
+                foot: { desc: "The epitome of automotive service and luxury concierge. Excellence as the only standard.", pillars: "Pillars", legal: "Legal", contact: "Contact", btn: "Contact us" },
+                ai: { m1: "System initialized. Connection established.", m2: "Hello. I am the AI of Luxury Premium Services. How can I help you?", input: "Your request..." },
+                rentPage: { dayRate: "DAILY RATE:", bookBtn: "Book this vehicle", otherModels: "Other models upon request" },
+                pages: {
+                    drive: { 
+                        title: "LP Drive", subtitle: "Tailor-made solutions to accompany you throughout your travels, whether professional or private.", content: ["LP Drive specializes in high-end chauffeured vehicle rentals in France and major European cities.", "The LP DRIVE team provides professional and experienced drivers. In case of unexpected events, we replace them immediately.", "Responsiveness, Availability, and Confidentiality are our master assets."], tableTitle: "PRICE LIST", tableSubtitle: "Prices shown include driver services, insurance policy and unlimited fuel.", tableHeaders: ["Model", "Daily Price*", "Extra Hour"], tableNote1: "*Prices indicated are for a contract duration of less than 7 days, beyond that we provide a custom quote.", tableNote2: "Other models upon request"
+                    },
+                    rent: { 
+                        title: "LP Rent", subtitle: "Throughout the year, the LP RENT team works to bring you exclusive new releases.", content: ["LP RENT offers a wide range of luxury vehicles tailored to your needs (Smart, Mini, Mercedes, BMW, Maserati, Bentley, Ferrari, Lamborghini, Rolls-Royce...)."]
+                    },
+                    conciergerie: { 
+                        title: "LP Concierge", subtitle: "The mastery of a highly motivated team's know-how to make each of your requests an exceptional event.", content: ["LP CONCIERGERIE will share its most confidential and trendy addresses with you.", "Our team will notify you of the rarest events and design the scenario of your desires (villa, yacht, private jet, helicopter, VIP reception)."]
+                    },
+                    wedding: { 
+                        title: "LP Wedding", subtitle: "FOR YOUR WEDDING, EVERY DETAIL COUNTS.", content: ["LP Wedding puts its 5+ years of know-how in passenger transport at your disposal and offers chauffeured rentals for your wedding.", "Your wedding is a unique day in your life!", "Among the many criteria to consider when organizing a wedding ceremony, the transport of the newlyweds is an essential element for which you must choose the absolute best."], statsLabel: "Years of experience", pricing: "Wedding package starting at 850€ - request a quote on the contact page"
+                    },
+                    contact: { 
+                        title: "Contact Us", desc: "Our team is at your disposal for any booking request, custom quote or information.", contactInfo: { phone: "01.48.42.54.77", email: "contact@infolps.fr" }
+                    }
+                },
+                conditionsPage: {
+                    title1: "TERMS OF SALE", section1_title: "Private chauffeured vehicle, passenger transport", section1_text: "The prices indicated in our rates include VAT at the rate set by current regulations for transport services (*), driver service, fuel, and unlimited 'transported persons' insurance. Tolls, parking fees, and meals are the responsibility of the transported persons.", section2_title: "Accepted payment methods", section2_text: "Cash, checks, credit cards (Visa or MasterCard). Any transport service is payable in cash upon completion. Any claim is only admissible within 7 days.", section3_title: "(*) Applicable VAT Rate", section3_text: "20% (rate to be updated in the event of a change by any legislative and/or regulatory provisions).", important_title: "VERY IMPORTANT", important_text: "Passenger transport for hire or reward is a regulated activity. Only authorized vehicles can perform this service.",
+                    title2: "RENTAL TERMS", section4_title: "Excerpt", section4_text1: "Our prices are expressed in Euros including VAT (20% VAT included). They are based on 24-hour periods. Beyond that, an additional day will be charged. Our prices include the mileage indicated on each contract, civil liability, unlimited third-party collision insurance.", section4_text2: "Damage caused to the upper parts of the vehicle as well as underbody shocks are excluded, as are transported goods, tire tears and punctures, parking fees.", section5_title: "Required Documents", section5_text: "Credit card accredited by Luxury Premium Services, bank check (after qualification), ID, driver's license held for more than 3 years, proof of address.", section6_title: "Rental Conditions", section6_text: "The driver must be at least 25 years old and hold a driver's license for more than 3 years. Except for certain vehicle categories: sports cars and high-end categories, where the holder must have held a driver's license for more than 5 years and be at least 25 years old.", section7_title: "Vehicle Abandonment", section7_text1: "Unless prior written agreement from the lessor, the vehicle must be returned to the agency that established the rental contract.", section7_text2: "For more information, please contact our agency."
+                }
+            }
+        };
+
+        const fleetCars = [
+            { brand: "Smart", model: "Fortwo EQ", price: "150€", img: "https://images.unsplash.com/photo-1552554746-88005b4ce883?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Fiat", model: "500 E", price: "180€", img: "https://images.unsplash.com/photo-1512351735230-a07bef68ed4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Mercedes", model: "AMG GT", price: "1200€", img: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "BMW", model: "X6 M", price: "900€", img: "https://images.unsplash.com/photo-1555626906-fcf10d6851b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Range Rover", model: "Sport", price: "1000€", img: "https://images.unsplash.com/photo-1606016159991-dfce4404e455?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Land Rover", model: "Defender", price: "850€", img: "https://images.unsplash.com/photo-1563720360172-67b8f3dce741?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Mercedes", model: "G63 AMG", price: "1300€", img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Porsche", model: "Taycan", price: "1100€", img: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Ferrari", model: "458 Spider", price: "1600€", img: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Porsche", model: "911 Turbo S", price: "1500€", img: "https://images.unsplash.com/photo-1503376712351-1f60046b8eb7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" },
+            { brand: "Lamborghini", model: "Aventador", price: "2200€", img: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" }
+        ];
+
+        // GÉNÉRATION DES PAGES HTML
+        function getPageContent(pageId, d) {
+            if (pageId === 'home') {
+                return `
+                <section class="relative h-screen w-full overflow-hidden flex items-center justify-center bg-[#FDFBF7]">
+                    <div class="absolute inset-0 w-full h-[120%] -top-[10%] bg-cover bg-center z-0 opacity-10 parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1503376712351-1f60046b8eb7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80')"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#FDFBF7]/50 to-[#FDFBF7] z-0"></div>
+                    <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-20">
+                        <p class="text-gold tracking-[0.3em] uppercase text-xs md:text-sm font-semibold mb-6 reveal">${d.hero.sub}</p>
+                        <h1 class="font-syne text-5xl md:text-8xl lg:text-9xl font-bold leading-[0.85] uppercase tracking-tighter mb-8 text-gray-900 reveal" style="transition-delay: 100ms">
+                            <span class="block">Luxury</span><span class="block text-gold">Premium</span><span class="block">Services</span>
+                        </h1>
+                        <p class="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto mb-12 font-light reveal" style="transition-delay: 200ms">${d.hero.desc}</p>
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-6 reveal" style="transition-delay: 300ms">
+                            <button onclick="navigate('rent')" class="bg-gold text-white hover:bg-black px-8 py-4 rounded-full font-semibold tracking-wider uppercase text-sm w-full md:w-auto transition-colors outline-none">${d.hero.btn1} <i data-lucide="arrow-up-right" class="w-4 h-4 inline-block ml-1"></i></button>
+                            <button onclick="navigate('conciergerie')" class="border border-gray-300 text-gray-900 hover:border-gold hover:text-gold px-8 py-4 rounded-full font-semibold tracking-wider uppercase text-sm w-full md:w-auto transition-colors outline-none">${d.hero.btn2}</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="py-24 px-6 bg-[#FDFBF7] relative z-10">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-20 reveal"><h2 class="font-syne text-3xl md:text-5xl text-gray-900 uppercase tracking-tight mb-8">${d.home.title} <span class="text-gold">${d.home.span}</span></h2><p class="text-xl md:text-2xl text-gray-600 font-light leading-relaxed max-w-4xl mx-auto">${d.home.desc}</p></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-left relative">
+                            <div class="hidden md:block absolute top-0 bottom-0 left-1/3 w-[1px] bg-gray-200"></div><div class="hidden md:block absolute top-0 bottom-0 left-2/3 w-[1px] bg-gray-200"></div>
+                            <div class="md:pr-8 reveal"><h3 class="text-gold font-syne text-2xl uppercase mb-6 flex items-center gap-3"><i data-lucide="shield" class="w-6 h-6"></i> LP Drive</h3><p class="text-gray-600 text-base leading-relaxed">${d.home.driveDesc}</p></div>
+                            <div class="md:px-4 reveal" style="transition-delay: 100ms"><h3 class="text-gold font-syne text-2xl uppercase mb-6 flex items-center gap-3"><i data-lucide="car-front" class="w-6 h-6"></i> LP Rent</h3><p class="text-gray-600 text-base leading-relaxed">${d.home.rentDesc}</p></div>
+                            <div class="md:pl-8 reveal" style="transition-delay: 200ms"><h3 class="text-gold font-syne text-2xl uppercase mb-6 flex items-center gap-3"><i data-lucide="sparkles" class="w-6 h-6"></i> Conciergerie</h3><p class="text-gray-600 text-base leading-relaxed">${d.home.conciergeDesc}</p></div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="py-32 px-6 relative z-10 bg-white">
+                    <div class="max-w-7xl mx-auto">
+                        <h2 class="font-syne text-4xl md:text-6xl uppercase tracking-tighter mb-20 text-gray-900 border-b border-gray-200 pb-8 reveal">${d.home.pillarsTitle.split(' ')[0]} <span class="text-gold">${d.home.pillarsTitle.split(' ')[1]}</span> ${d.home.pillarsTitle.split(' ').slice(2).join(' ')}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div onclick="navigate('drive')" class="group relative h-[400px] rounded-2xl overflow-hidden cursor-pointer bg-gray-100 shadow-md reveal"><div class="absolute inset-0 bg-cover bg-center opacity-60 group-hover:opacity-80 transition-opacity duration-700 group-hover:scale-110 ease-out" style="background-image: url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90"></div><div class="absolute inset-0 p-8 flex flex-col justify-end transition-transform duration-500 transform translate-y-4 group-hover:translate-y-0"><div class="text-gold mb-4 opacity-70 group-hover:opacity-100 transition-opacity"><i data-lucide="shield" class="w-6 h-6"></i></div><h3 class="font-syne text-2xl font-bold uppercase tracking-tight mb-2 text-white">LP Drive</h3><p class="text-sm text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">${d.home.driveDesc.substring(0, 80)}...</p><div class="mt-6 w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-gold group-hover:border-transparent transition-all duration-300"><i data-lucide="arrow-up-right" class="w-4 h-4 text-white"></i></div></div></div>
+                            <div onclick="navigate('rent')" class="group relative h-[400px] rounded-2xl overflow-hidden cursor-pointer bg-gray-100 shadow-md reveal" style="transition-delay: 100ms"><div class="absolute inset-0 bg-cover bg-center opacity-60 group-hover:opacity-80 transition-opacity duration-700 group-hover:scale-110 ease-out" style="background-image: url('https://images.unsplash.com/photo-1614200187524-dc4b892acf16?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90"></div><div class="absolute inset-0 p-8 flex flex-col justify-end transition-transform duration-500 transform translate-y-4 group-hover:translate-y-0"><div class="text-gold mb-4 opacity-70 group-hover:opacity-100 transition-opacity"><i data-lucide="car-front" class="w-6 h-6"></i></div><h3 class="font-syne text-2xl font-bold uppercase tracking-tight mb-2 text-white">LP Rent</h3><p class="text-sm text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">${d.home.rentDesc.substring(0, 80)}...</p><div class="mt-6 w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-gold group-hover:border-transparent transition-all duration-300"><i data-lucide="arrow-up-right" class="w-4 h-4 text-white"></i></div></div></div>
+                            <div onclick="navigate('conciergerie')" class="group relative h-[400px] rounded-2xl overflow-hidden cursor-pointer bg-gray-100 shadow-md reveal" style="transition-delay: 200ms"><div class="absolute inset-0 bg-cover bg-center opacity-60 group-hover:opacity-80 transition-opacity duration-700 group-hover:scale-110 ease-out" style="background-image: url('https://images.unsplash.com/photo-1551882547-ff40c0d12c5a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90"></div><div class="absolute inset-0 p-8 flex flex-col justify-end transition-transform duration-500 transform translate-y-4 group-hover:translate-y-0"><div class="text-gold mb-4 opacity-70 group-hover:opacity-100 transition-opacity"><i data-lucide="sparkles" class="w-6 h-6"></i></div><h3 class="font-syne text-2xl font-bold uppercase tracking-tight mb-2 text-white">LP Conciergerie</h3><p class="text-sm text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">${d.home.conciergeDesc.substring(0, 80)}...</p><div class="mt-6 w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-gold group-hover:border-transparent transition-all duration-300"><i data-lucide="arrow-up-right" class="w-4 h-4 text-white"></i></div></div></div>
+                            <div onclick="navigate('wedding')" class="group relative h-[400px] rounded-2xl overflow-hidden cursor-pointer bg-gray-100 shadow-md reveal" style="transition-delay: 300ms"><div class="absolute inset-0 bg-cover bg-center opacity-60 group-hover:opacity-80 transition-opacity duration-700 group-hover:scale-110 ease-out" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')"></div><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90"></div><div class="absolute inset-0 p-8 flex flex-col justify-end transition-transform duration-500 transform translate-y-4 group-hover:translate-y-0"><div class="text-gold mb-4 opacity-70 group-hover:opacity-100 transition-opacity"><i data-lucide="calendar-check" class="w-6 h-6"></i></div><h3 class="font-syne text-2xl font-bold uppercase tracking-tight mb-2 text-white">LP Wedding</h3><p class="text-sm text-white/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">L'élégance automobile au service de votre jour...</p><div class="mt-6 w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-gold group-hover:border-transparent transition-all duration-300"><i data-lucide="arrow-up-right" class="w-4 h-4 text-white"></i></div></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="py-32 overflow-hidden relative bg-[#F8F8F5]">
+                    <div class="max-w-7xl mx-auto px-6 mb-16 flex justify-between items-end">
+                    <Reveal><h2 class="font-syne text-4xl md:text-5xl uppercase tracking-tighter text-gray-900">${d.home.fleetTitle.split(' ')[0]} <span class="text-gold">${d.home.fleetTitle.split(' ')[1]}</span></h2></Reveal>
+                    <Reveal delay="delay-100"><button onclick="navigate('rent')" class="hidden md:flex items-center text-xs tracking-widest uppercase text-gray-500 hover:text-gold font-semibold outline-none">${d.home.fleetBtn} <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i></button></Reveal>
+                    </div>
+                    <div class="flex gap-8 px-6 pb-12 w-[300vw] md:w-[150vw] hover:-translate-x-10 transition-transform duration-[2s] ease-out">
+                        <div onclick="navigate('rent')" class="w-[80vw] md:w-[40vw] flex-shrink-0 group cursor-pointer">
+                            <div class="h-[50vh] rounded-2xl overflow-hidden relative mb-6 shadow-xl">
+                                <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Porsche" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+                                <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] uppercase tracking-widest text-black font-bold">LP Rent</div>
+                            </div>
+                            <h4 class="font-syne text-2xl uppercase tracking-tight text-gray-900 group-hover:text-gold transition-colors font-bold">Porsche 911 GT3 RS</h4>
+                            <div class="flex gap-4 mt-3 text-xs text-gray-500 tracking-wider font-semibold"><span>520 CH</span><span>•</span><span>0-100 KM/H 3.2S</span></div>
+                        </div>
+                        <div onclick="navigate('drive')" class="w-[80vw] md:w-[40vw] flex-shrink-0 group cursor-pointer mt-12 md:mt-24">
+                            <div class="h-[50vh] rounded-2xl overflow-hidden relative mb-6 shadow-xl">
+                                <img src="https://images.unsplash.com/photo-1520031441872-265e4ff70366?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Mercedes" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+                                <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] uppercase tracking-widest text-black font-bold">LP Drive</div>
+                            </div>
+                            <h4 class="font-syne text-2xl uppercase tracking-tight text-gray-900 group-hover:text-gold transition-colors font-bold">Mercedes G63 AMG</h4>
+                            <div class="flex gap-4 mt-3 text-xs text-gray-500 tracking-wider font-semibold"><span>585 CH</span><span>•</span><span>PRESTIGE SUV</span></div>
+                        </div>
+                    </div>
+                </section>
+                `;
+            }
+
+            if (pageId === 'conditions') {
+                const cp = d.conditionsPage;
+                return `
+                <section class="pt-32 pb-20 px-6 max-w-4xl mx-auto bg-white min-h-screen">
+                    <div class="text-center mb-16 border-b border-gold/30 pb-8 reveal"><h1 class="font-syne text-3xl md:text-4xl text-gray-900 uppercase tracking-widest">${cp.title1}</h1></div>
+                    <div class="space-y-12 text-sm text-gray-600 leading-relaxed font-light reveal">
+                        <div><h3 class="text-gold uppercase tracking-wider mb-4 font-medium">${cp.section1_title}</h3><p>${cp.section1_text}</p></div>
+                        <div><h3 class="text-gold uppercase tracking-wider mb-4 font-medium">${cp.section2_title}</h3><p>${cp.section2_text}</p></div>
+                        <div><h3 class="text-gold uppercase tracking-wider mb-4 font-medium">${cp.section3_title}</h3><p>${cp.section3_text}</p></div>
+                        <div class="bg-gray-50 p-6 rounded-lg border-l-4 border-red-400"><h3 class="text-gray-900 uppercase tracking-wider mb-2 font-semibold">${cp.important_title}</h3><p>${cp.important_text}</p></div>
+                    </div>
+                    <div class="text-center my-16 border-b border-gold/30 pb-8 reveal"><h1 class="font-syne text-3xl md:text-4xl text-gray-900 uppercase tracking-widest">${cp.title2}</h1></div>
+                    <div class="space-y-12 text-sm text-gray-600 leading-relaxed font-light reveal">
+                        <div><h3 class="text-gold uppercase tracking-wider mb-4 font-medium">${cp.section4_title}</h3><p class="mb-4">${cp.section4_text1}</p><p>${cp.section4_text2}</p></div>
+                        <div><h3 class="text-gold uppercase tracking-wider mb-4 font-medium">${cp.section5_title}</h3><p>${cp.section5_text}</p></div>
+                        <div><h3 class="text-gold uppercase tracking-wider mb-4 font-medium">${cp.section6_title}</h3><p>${cp.section6_text}</p></div>
+                        <div><h3 class="text-gold uppercase tracking-wider mb-4 font-medium">${cp.section7_title}</h3><p>${cp.section7_text1}</p><p class="mt-4 font-medium">${cp.section7_text2}</p></div>
+                    </div>
+                </section>
+                `;
+            }
+
+            const p = d.pages[pageId];
+            if(!p) return '';
+
+            let extraHtml = '';
+            
+            if (pageId === 'drive') {
+                extraHtml = `
+                    <div class="mt-12 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm reveal">
+                        <div class="text-center mb-8"><h4 class="font-syne text-2xl md:text-3xl uppercase tracking-widest text-gray-900 mb-2">${p.tableTitle}</h4><div class="h-[2px] w-16 bg-gold mx-auto mb-4"></div><p class="text-sm text-gray-500">${p.tableSubtitle}</p></div>
+                        <div class="overflow-x-auto"><table class="w-full text-left border-collapse"><thead><tr class="border-b border-gray-200"><th class="py-4 font-semibold text-gray-900 uppercase text-xs tracking-wider">${p.tableHeaders[0]}</th><th class="py-4 font-semibold text-gray-900 uppercase text-xs tracking-wider">${p.tableHeaders[1]}</th><th class="py-4 font-semibold text-gray-900 uppercase text-xs tracking-wider">${p.tableHeaders[2]}</th></tr></thead><tbody class="text-sm text-gray-600">
+                        ${[
+                            { m: "Class E", pr: "600€", e: "60€" }, { m: "Class V", pr: "650€", e: "60€" }, { m: "Class S 350**", pr: "850€", e: "100€" }, { m: "Class S 580", pr: "950€", e: "100€" }, { m: "Class S Maybach", pr: "1100€", e: "150€" }, { m: "Range Rover Sport**", pr: "1100€", e: "150€" }, { m: "Range Rover", pr: "1400€", e: "180€" }
+                        ].map(row => `<tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors"><td class="py-4 font-medium text-gray-900">${row.m}</td><td class="py-4">${row.pr}</td><td class="py-4">${row.e}</td></tr>`).join('')}
+                        </tbody></table></div>
+                        <div class="mt-6 text-xs text-gray-400 space-y-1"><p>${p.tableNote1}</p><p class="font-semibold">${p.tableNote2}</p></div>
+                    </div>`;
+            }
+
+            if (pageId === 'rent') {
+                extraHtml = `
+                    <div class="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
+                        ${fleetCars.map((car) => `
+                            <div onclick='openCarModal(${JSON.stringify(car).replace(/'/g, "&apos;")})' class="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-lg bg-gray-100">
+                                <img src="${car.img}" alt="${car.model}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                                    <span class="text-gold font-bold text-xs uppercase tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-300">${car.brand}</span>
+                                    <span class="text-white font-syne text-2xl font-bold uppercase translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">${car.model}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                        <div class="col-span-full text-center mt-8 text-gray-500 font-medium text-sm">${d.rentPage.otherModels}</div>
+                    </div>`;
+            }
+
+            if (pageId === 'wedding') {
+                extraHtml = `
+                    <div class="flex flex-col md:flex-row gap-8 items-start md:items-center mt-12 pt-8 border-t border-gray-200 reveal">
+                        <div class="flex items-center gap-4"><span class="font-syne text-5xl md:text-6xl text-gold">5+</span><span class="text-sm uppercase tracking-widest text-gray-500 w-24 leading-tight">${p.statsLabel}</span></div>
+                        <div class="glass-panel-gold bg-gold/5 px-6 py-4 rounded-xl text-sm font-semibold tracking-wider text-gold uppercase">${p.pricing}</div>
+                    </div>`;
+            }
+
+            if (pageId === 'contact') {
+                extraHtml = `
+                    <div class="mt-12 bg-black text-white rounded-2xl p-8 md:p-12 shadow-xl inline-block w-full max-w-2xl reveal">
+                        <div class="mb-10"><h4 class="font-syne text-2xl md:text-3xl font-bold mb-4">Luxury Premium Services :</h4><a href="tel:${p.contactInfo.phone.replace(/\./g, '')}" class="block text-gold text-3xl md:text-4xl font-light tracking-widest hover:text-white transition-colors duration-300">${p.contactInfo.phone}</a></div>
+                        <div><h4 class="font-syne text-2xl md:text-3xl font-bold mb-4">Email :</h4><a href="mailto:${p.contactInfo.email}" class="block text-gold text-xl md:text-2xl font-light tracking-wider hover:text-white transition-colors duration-300">${p.contactInfo.email}</a></div>
+                    </div>`;
+            }
+
+            // Gestion de l'image de fond pour chaque page
+            let img = 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80';
+            if (pageId === 'rent') img = 'https://images.unsplash.com/photo-1614200187524-dc4b892acf16?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80';
+            if (pageId === 'conciergerie') img = 'https://images.unsplash.com/photo-1551882547-ff40c0d12c5a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80';
+            if (pageId === 'wedding') img = 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80';
+            if (pageId === 'contact') img = 'https://images.unsplash.com/photo-1503376712351-1f60046b8eb7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80';
+
+            const formattedTitle = p.title.split(' ').map((w, i) => i === 1 ? `<span class="text-gold">${w} </span>` : `${w} `).join('');
+
+            return `
+            <section class="relative min-h-screen w-full overflow-hidden flex flex-col pt-32 pb-20">
+                <div class="absolute inset-0 w-full h-[120%] -top-[10%] bg-cover bg-center z-0 opacity-[0.07] parallax-bg" style="background-image: url('${img}')"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-[#FDFBF7] via-transparent to-[#FDFBF7] z-0"></div>
+                <div class="relative z-10 max-w-5xl mx-auto px-6 w-full flex-1 flex flex-col justify-center mt-12">
+                    <h1 class="font-syne text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-8 text-gray-900 reveal">${formattedTitle}</h1>
+                    ${p.subtitle ? `<h3 class="text-xl md:text-2xl text-gray-800 font-medium mb-10 border-l-4 border-gold pl-6 uppercase tracking-wide reveal">${p.subtitle}</h3>` : ''}
+                    <div class="space-y-6 text-gray-600 text-lg max-w-3xl font-light mb-12 reveal">
+                        ${p.content ? p.content.map(t => `<p>${t}</p>`).join('') : `<p>${p.desc}</p>`}
+                    </div>
+                    ${extraHtml}
+                </div>
+            </section>`;
+        }
+
+        // --- FONCTIONS DE BASE ---
+        
+        function navigate(pageId) {
+            currentPage = pageId;
+            const d = dict[currentLang];
+            document.getElementById('main-content').innerHTML = getPageContent(pageId, d);
+            window.scrollTo(0, 0);
+            
+            // Relance les scripts dynamiques
+            lucide.createIcons();
+            setTimeout(() => initReveal(), 50); // Leight delay pour laisser le DOM s'insérer
+            applyTranslations(); 
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            document.getElementById('lang-indicator').innerText = currentLang.toUpperCase();
+            navigate(currentPage); // Re-génère la page courante avec la nouvelle langue
+        }
+
+        function applyTranslations() {
+            const d = dict[currentLang];
+            // Traduction des éléments fixes (Nav, Footer, Modals)
+            document.querySelectorAll('.t-nav-drive').forEach(el => el.innerText = d.nav.drive);
+            document.querySelectorAll('.t-nav-rent').forEach(el => el.innerText = d.nav.rent);
+            document.querySelectorAll('.t-nav-concierge').forEach(el => el.innerText = d.nav.conciergerie);
+            document.querySelectorAll('.t-nav-wedding').forEach(el => el.innerText = d.nav.wedding);
+            document.querySelectorAll('.t-nav-cond').forEach(el => el.innerText = d.nav.conditions);
+            document.querySelectorAll('.t-nav-lang').forEach(el => el.innerText = d.nav.lang);
+            
+            document.querySelectorAll('.t-foot-desc').forEach(el => el.innerText = d.foot.desc);
+            document.querySelectorAll('.t-foot-pillars').forEach(el => el.innerText = d.foot.pillars);
+            document.querySelectorAll('.t-foot-legal').forEach(el => el.innerText = d.foot.legal);
+            document.querySelectorAll('.t-foot-contact').forEach(el => el.innerText = d.foot.contact);
+            document.querySelectorAll('.t-foot-btn').forEach(el => el.innerText = d.foot.btn);
+            
+            document.querySelectorAll('.t-ai-1').forEach(el => el.innerText = d.ai.m1);
+            document.querySelectorAll('.t-ai-2').forEach(el => el.innerText = d.ai.m2);
+            document.getElementById('ai-input').placeholder = d.ai.input;
+            
+            document.querySelectorAll('.t-rent-day').forEach(el => el.innerText = d.rentPage.dayRate);
+            document.querySelectorAll('.t-rent-book').forEach(el => el.innerText = d.rentPage.bookBtn);
+        }
+
+        // --- EFFETS ET MODALS ---
+
+        function initReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        function toggleAi() {
+            const panel = document.getElementById('ai-panel');
+            if(panel.classList.contains('opacity-0')) {
+                panel.classList.remove('w-0', 'h-0', 'opacity-0', 'scale-50');
+                panel.classList.add('w-80', 'h-96', 'opacity-100', 'scale-100');
+            } else {
+                panel.classList.add('w-0', 'h-0', 'opacity-0', 'scale-50');
+                panel.classList.remove('w-80', 'h-96', 'opacity-100', 'scale-100');
+            }
+        }
+
+        function openCarModal(car) {
+            document.body.style.overflow = 'hidden'; // Bloque le scroll
+            document.getElementById('modal-img').src = car.img;
+            document.getElementById('modal-brand').innerText = car.brand;
+            document.getElementById('modal-model').innerText = car.model;
+            document.getElementById('modal-price').innerText = car.price;
+            
+            const modal = document.getElementById('car-modal');
+            const content = document.getElementById('car-modal-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }
+
+        function closeCarModal() {
+            document.body.style.overflow = 'unset'; // Restaure le scroll
+            const modal = document.getElementById('car-modal');
+            const content = document.getElementById('car-modal-content');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+        }
+
+        // Parallaxe Background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            document.querySelectorAll('.parallax-bg').forEach(el => {
+                el.style.transform = `translateY(${scrolled * 0.3}px)`;
+            });
+        });
+
+        // Curseur Personnalisé
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        window.addEventListener('mousemove', (e) => {
+            dot.style.transform = `translate(${e.clientX - 8}px, ${e.clientY - 8}px)`;
+            ring.style.transform = `translate(${e.clientX - 24}px, ${e.clientY - 24}px)`;
+        });
+        document.addEventListener('mouseover', (e) => {
+            if(e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.closest('.group')) {
+                dot.style.transform = `translate(${e.clientX - 8}px, ${e.clientY - 8}px) scale(2.5)`;
+                ring.style.transform = `translate(${e.clientX - 24}px, ${e.clientY - 24}px) scale(1.5)`;
+            }
+        });
+
+        // Lancement Initial
+        window.onload = () => {
+            lucide.createIcons();
+            navigate('home');
+        };
+
+    </script>
+</body>
+</html>
